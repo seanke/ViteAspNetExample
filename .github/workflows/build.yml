@@ -1,0 +1,22 @@
+﻿name: Deploy
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Build Solution
+        working-directory: cicd
+        run: ./build.ps1
+        shell: pwsh

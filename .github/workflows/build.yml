@@ -17,6 +17,6 @@ jobs:
           dotnet-version: '7.0.x'
 
       - name: Build Solution
-        working-directory: cicd
+        working-directory: Cicd
         run: ./build.ps1
         shell: pwsh

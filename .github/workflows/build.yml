@@ -5,7 +5,13 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch:
-    
+
+env:
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,7 +22,20 @@ jobs:
         with:
           dotnet-version: '7.0.x'
 
-      - name: Build Solution
+      - name: Build
         working-directory: Cicd
         run: ./build.ps1
+        shell: pwsh
+
+      - name: Azure Login
+        run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ inputs.AZURE_TENANT_ID }}
+
+      - name: Run Dev
+        working-directory: cicd
+        run: ./deploy.ps1 dev
+        shell: pwsh
+
+      - name: Run Prod
+        working-directory: cicd
+        run: ./deploy.ps1 prod
         shell: pwsh

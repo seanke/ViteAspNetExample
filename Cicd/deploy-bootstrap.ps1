@@ -50,6 +50,7 @@ $createKeyVault = {
     
     $accountObjectId = az ad signed-in-user show --query id --output tsv
     
+    Write-Host "Adding access policy to key vault"
     #add access
     az keyvault set-policy `
         --name $KeyVaultName `
@@ -62,6 +63,7 @@ $createKeyVault = {
         throw "Error creating key vault access policy"
     }
     
+    Write-Host "Checking for sql server password secret"
     #sql-server-password
     $sqlServerPasswordSecret = az keyvault secret list-versions `
         --name sql-server-password `
@@ -101,12 +103,14 @@ $createStorageAccount = {
     }
     
     ######### CREATE STORAGE ACCOUNT #########
+    Write-Output "Setting up storage account"
     az storage account create `
         --name $StorageName `
         --resource-group $StorageResourceGroupName `
         --subscription $StorageSubscriptionId
     ThrowIfFailed "Error creating storage account"
 
+    Write-Output "Setting up storage container"
     $output = az storage account keys list `
     --account-name $StorageName `
     --resource-group $StorageResourceGroupName `
@@ -115,6 +119,7 @@ $createStorageAccount = {
 
     $key = $output[0].Value
 
+    Write-Host "Creating storage container"
     az storage container create `
         --name terraform `
         --account-name $StorageName `

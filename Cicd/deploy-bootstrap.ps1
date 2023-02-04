@@ -50,7 +50,7 @@ $createKeyVault = {
     
     $accountObjectId = az ad signed-in-user show --query id --output tsv
     
-    Write-Host "Adding access policy to key vault"
+    Write-Output "Adding access policy to key vault"
     #add access
     az keyvault set-policy `
         --name $KeyVaultName `
@@ -63,7 +63,7 @@ $createKeyVault = {
         throw "Error creating key vault access policy"
     }
     
-    Write-Host "Checking for sql server password secret"
+    Write-Output "Checking for sql server password secret"
     #sql-server-password
     $sqlServerPasswordSecret = az keyvault secret list-versions `
         --name sql-server-password `
@@ -119,7 +119,7 @@ $createStorageAccount = {
 
     $key = $output[0].Value
 
-    Write-Host "Creating storage container"
+    Write-Output "Creating storage container"
     az storage container create `
         --name terraform `
         --account-name $StorageName `
@@ -137,13 +137,13 @@ $createKeyVaultResult | Wait-Job
 
 if($createStorageResult.State -ne "Completed")
 {
-    Write-Host "################### Storage Account Result ###################"
+    Write-Output "################### Storage Account Result ###################"
     $createStorageResult | Receive-Job
     throw "Error creating storage account"
 }
 
 if($createKeyVaultResult.State -ne "Completed")
 {
-    Write-Host "################### Key Vault Result ###################"
+    Write-Output "################### Key Vault Result ###################"
     $createKeyVaultResult | Receive-Job
 }

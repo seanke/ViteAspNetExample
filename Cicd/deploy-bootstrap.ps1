@@ -47,8 +47,19 @@ $createKeyVault = {
             throw "Error creating key vault"
         }
     }
+
+    $account = az account show
+    Write-Host $account
+    if($LASTEXITCODE -ne 0){
+        throw "Error getting account details"
+    }
     
-    $accountObjectId = az ad signed-in-user show --query id --output tsv
+    if($account.type -eq "user"){
+        $accountObjectId = az ad signed-in-user show --query id --output tsv
+    }
+    else{
+        $accountObjectId = $account.servicePrincipal.id
+    }
     
     Write-Output "Adding access policy to key vault"
     #add access

@@ -59,7 +59,7 @@ $createKeyVault = {
         $accountObjectId = az ad signed-in-user show --query id --output tsv
     }
     else{
-        az ad sp show --id $account.user.name --query id --output tsv
+        $accountObjectId = az ad sp show --id $account.user.name --query id --output tsv
     }
     
     Write-Output "Adding access policy to key vault"

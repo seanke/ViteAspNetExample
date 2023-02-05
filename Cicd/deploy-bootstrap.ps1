@@ -50,7 +50,7 @@ $createKeyVault = {
 
     $account = az account show
     Write-Host $account
-    Write-Host $account.user.name
+    Write-Host "account id = $($account.user.name)"
     if($LASTEXITCODE -ne 0){
         throw "Error getting account details"
     }

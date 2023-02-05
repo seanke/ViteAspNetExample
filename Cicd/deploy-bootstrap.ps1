@@ -48,14 +48,14 @@ $createKeyVault = {
         }
     }
 
-    $account = az account show
+    $account = az account show | ConvertFrom-Json
     Write-Host $account
     Write-Host "account id = $($account.user.name)"
     if($LASTEXITCODE -ne 0){
         throw "Error getting account details"
     }
     
-    if($account.type -eq "user"){
+    if($account.user.type -eq "user"){
         $accountObjectId = az ad signed-in-user show --query id --output tsv
     }
     else{

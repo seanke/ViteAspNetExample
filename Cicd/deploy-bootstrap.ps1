@@ -50,6 +50,7 @@ $createKeyVault = {
 
     $account = az account show
     Write-Host $account
+    Write-Host $account.user.name
     if($LASTEXITCODE -ne 0){
         throw "Error getting account details"
     }
@@ -58,7 +59,7 @@ $createKeyVault = {
         $accountObjectId = az ad signed-in-user show --query id --output tsv
     }
     else{
-        $accountObjectId = $account.user.name
+        $accountObjectId = "$($account.user.name)"
     }
     
     Write-Output "Adding access policy to key vault"

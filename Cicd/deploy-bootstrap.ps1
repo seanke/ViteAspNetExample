@@ -88,8 +88,7 @@ $createKeyVault = {
     
     if($sqlServerPasswordSecret.count -eq 0){
         Write-Output "Creating sql server password secret"
-        Add-Type -AssemblyName System.Web
-        $sqlServerPassword = [System.Web.Security.Membership]::GeneratePassword(50, 0)
+        $sqlServerPassword = -join ((48..126) | Get-Random -Count 50 | % {[char]$_})
         az keyvault secret set `
             --vault-name $KeyVaultName `
             --name sql-server-password `

@@ -26,7 +26,9 @@ jobs:
         working-directory: Cicd
         run: ./build.ps1
         shell: pwsh
-
+  
+  deploy-dev:
+    runs-on: ubuntu-latest
       - name: Azure Login
         run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p=${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
 
@@ -35,6 +37,8 @@ jobs:
         run: ./deploy.ps1 dev
         shell: pwsh
 
+  deploy-prod:
+    runs-on: ubuntu-latest
       - name: Run Prod
         working-directory: Cicd
         run: ./deploy.ps1 prod

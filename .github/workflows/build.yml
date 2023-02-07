@@ -46,6 +46,8 @@ jobs:
           name: .build
           path: .build
 
+      - uses: actions/checkout@v2
+
       - name: Run Dev
         working-directory: Cicd
         run: ./deploy.ps1 dev
@@ -64,6 +66,8 @@ jobs:
           name: .build
           path: .build
           
+      - uses: actions/checkout@v2                
+                
       - name: Run Prod
         working-directory: Cicd
         run: ./deploy.ps1 prod

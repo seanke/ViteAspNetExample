@@ -36,6 +36,7 @@ jobs:
   deploy-dev:
     needs: build
     runs-on: ubuntu-latest
+    concurrency: deploy-dev
     steps:
       - name: Azure Login
         run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p=${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
@@ -56,6 +57,7 @@ jobs:
   deploy-prod:
     needs: build
     runs-on: ubuntu-latest
+    concurrency: deploy-prod
     steps:
       - name: Azure Login
         run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p=${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}

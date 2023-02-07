@@ -26,12 +26,25 @@ jobs:
         working-directory: Cicd
         run: ./build.ps1
         shell: pwsh
+        
+      - name: Archive .build
+        uses: actions/upload-artifact@v2
+        with:
+          name: .build
+          path: .build
   
   deploy-dev:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login
         run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p=${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Download Archive
+        uses: actions/download-artifact@v2
+        with:
+          name: .build
+          path: .build
 
       - name: Run Dev
         working-directory: Cicd
@@ -39,8 +52,18 @@ jobs:
         shell: pwsh
 
   deploy-prod:
+    needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Azure Login
+        run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p=${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Download Archive
+        uses: actions/download-artifact@v2
+        with:
+          name: .build
+          path: .build
+          
       - name: Run Prod
         working-directory: Cicd
         run: ./deploy.ps1 prod

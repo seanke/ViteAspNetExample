@@ -47,9 +47,22 @@ $createKeyVault = {
             throw "Error creating key vault"
         }
     }
+
+    $account = az account show | ConvertFrom-Json
+    Write-Host $account
+    Write-Host "account id = $($account.user.name)"
+    if($LASTEXITCODE -ne 0){
+        throw "Error getting account details"
+    }
     
-    $accountObjectId = az ad signed-in-user show --query id --output tsv
+    if($account.user.type -eq "user"){
+        $accountObjectId = az ad signed-in-user show --query id --output tsv
+    }
+    else{
+        $accountObjectId = az ad sp show --id $account.user.name --query id --output tsv
+    }
     
+    Write-Output "Adding access policy to key vault"
     #add access
     az keyvault set-policy `
         --name $KeyVaultName `
@@ -62,6 +75,7 @@ $createKeyVault = {
         throw "Error creating key vault access policy"
     }
     
+    Write-Output "Checking for sql server password secret"
     #sql-server-password
     $sqlServerPasswordSecret = az keyvault secret list-versions `
         --name sql-server-password `
@@ -74,8 +88,7 @@ $createKeyVault = {
     
     if($sqlServerPasswordSecret.count -eq 0){
         Write-Output "Creating sql server password secret"
-        Add-Type -AssemblyName System.Web
-        $sqlServerPassword = [System.Web.Security.Membership]::GeneratePassword(50, 0)
+        $sqlServerPassword = -join ((48..126) | Get-Random -Count 50 | % {[char]$_})
         az keyvault secret set `
             --vault-name $KeyVaultName `
             --name sql-server-password `
@@ -101,12 +114,14 @@ $createStorageAccount = {
     }
     
     ######### CREATE STORAGE ACCOUNT #########
+    Write-Output "Setting up storage account"
     az storage account create `
         --name $StorageName `
         --resource-group $StorageResourceGroupName `
         --subscription $StorageSubscriptionId
     ThrowIfFailed "Error creating storage account"
 
+    Write-Output "Setting up storage container"
     $output = az storage account keys list `
     --account-name $StorageName `
     --resource-group $StorageResourceGroupName `
@@ -115,6 +130,7 @@ $createStorageAccount = {
 
     $key = $output[0].Value
 
+    Write-Output "Creating storage container"
     az storage container create `
         --name terraform `
         --account-name $StorageName `
@@ -132,13 +148,13 @@ $createKeyVaultResult | Wait-Job
 
 if($createStorageResult.State -ne "Completed")
 {
-    Write-Host "################### Storage Account Result ###################"
+    Write-Output "################### Storage Account Result ###################"
     $createStorageResult | Receive-Job
     throw "Error creating storage account"
 }
 
 if($createKeyVaultResult.State -ne "Completed")
 {
-    Write-Host "################### Key Vault Result ###################"
+    Write-Output "################### Key Vault Result ###################"
     $createKeyVaultResult | Receive-Job
 }

@@ -1,8 +1,8 @@
-﻿dotnet publish "./../WebVite/WebVite.csproj" --configuration Release /p:DebugType=None --output "./../.build/WebVite"
+﻿dotnet publish "./../WebApp/WebApp.csproj" --configuration Release /p:DebugType=None --output "./../.build/WebApp"
 if($LASTEXITCODE -ne 0){
     throw
 }
 
-Compress-Archive -Path "./../.build/WebVite/*" -DestinationPath "./../.build/WebVite.zip" -Force
+Compress-Archive -Path "./../.build/WebApp/*" -DestinationPath "./../.build/WebApp.zip" -Force
 
-Remove-Item "./../.build/WebVite" -Recurse -ErrorAction SilentlyContinue
+Remove-Item "./../.build/WebApp" -Recurse -ErrorAction SilentlyContinue

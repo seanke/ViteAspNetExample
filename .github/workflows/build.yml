@@ -1,0 +1,76 @@
+﻿name: Deploy
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: e08176a0-bfdd-47f2-8001-02270f3a8211
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Build
+        working-directory: Cicd
+        run: ./build.ps1
+        shell: pwsh
+        
+      - name: Archive .build
+        uses: actions/upload-artifact@v2
+        with:
+          name: .build
+          path: .build
+  
+  deploy-dev:
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency: deploy-dev
+    steps:
+      - name: Azure Login
+        run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p=${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Download Archive
+        uses: actions/download-artifact@v2
+        with:
+          name: .build
+          path: .build
+
+      - uses: actions/checkout@v2
+
+      - name: Run Dev
+        working-directory: Cicd
+        run: ./deploy.ps1 dev
+        shell: pwsh
+
+  deploy-prod:
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency: deploy-prod
+    steps:
+      - name: Azure Login
+        run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p=${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Download Archive
+        uses: actions/download-artifact@v2
+        with:
+          name: .build
+          path: .build
+          
+      - uses: actions/checkout@v2                
+                
+      - name: Run Prod
+        working-directory: Cicd
+        run: ./deploy.ps1 prod
+        shell: pwsh

@@ -12,4 +12,5 @@ pool:
 steps:
 - task: PowerShell@2
   inputs:
-    filePath: '/cicd/build.ps1'
+    filePath: build.ps1
+    workingDirectory: Cicd

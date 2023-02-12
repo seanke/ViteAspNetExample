@@ -5,11 +5,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:  
-- stage: Build  
+- stage: Build
   jobs:  
-  - job: BuildJob  
+  - job: Build
     steps:
     - task: PowerShell@2
+      displayName: Build
       inputs:
         filePath: './Cicd/build.ps1'
         workingDirectory: 'Cicd'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        pathtoPublish: '$(build.artifactstagingdirectory)/.build/' #Publish (different from the command used above) allows the artifact to be used in later jobs
+        artifactName: '.build'

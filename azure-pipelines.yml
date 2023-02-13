@@ -17,5 +17,41 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact'
       inputs:
-        pathtoPublish: '.build/' #Publish (different from the command used above) allows the artifact to be used in later jobs
+        pathtoPublish: '.build/'
         artifactName: '.build'
+- stage: DeployDev
+  dependsOn: Build
+  jobs:
+  - job: DeployDev
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '.build'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'Azure'
+        ScriptType: 'FilePath'
+        ScriptPath: './Cicd/deploy.ps1'
+        ScriptArguments: 'dev'
+        azurePowerShellVersion: 'LatestVersion'
+- stage: DeployProd
+  jobs:
+  - job: DeployProd
+    dependsOn: Build
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '.build'
+        downloadPath: '$(System.ArtifactsDirectory)'
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'Azure'
+        ScriptType: 'FilePath'
+        ScriptPath: './Cicd/deploy.ps1'
+        ScriptArguments: 'prod'
+        azurePowerShellVersion: 'LatestVersion'

@@ -38,9 +38,9 @@ stages:
         ScriptArguments: 'dev'
         azurePowerShellVersion: 'LatestVersion'
 - stage: DeployProd
+  dependsOn: Build
   jobs:
   - job: DeployProd
-    dependsOn: Build
     steps:
     - task: DownloadBuildArtifacts@1
       inputs:

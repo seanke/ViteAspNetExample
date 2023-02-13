@@ -35,6 +35,7 @@ stages:
         azureSubscription: 'Azure'
         ScriptType: 'FilePath'
         ScriptPath: './Cicd/deploy.ps1'
+        workingDirectory: 'Cicd'
         ScriptArguments: 'dev'
         azurePowerShellVersion: 'LatestVersion'
 - stage: DeployProd
@@ -53,5 +54,6 @@ stages:
         azureSubscription: 'Azure'
         ScriptType: 'FilePath'
         ScriptPath: './Cicd/deploy.ps1'
+        workingDirectory: 'Cicd'
         ScriptArguments: 'prod'
         azurePowerShellVersion: 'LatestVersion'

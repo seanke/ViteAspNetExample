@@ -31,6 +31,7 @@ stages:
         artifactName: '.build'
         downloadPath: '$(System.ArtifactsDirectory)'
     - task: AzureCLI@2
+      displayName: 'DeployDev'
       inputs:
         azureSubscription: 'Azure'
         scriptType: 'ps'

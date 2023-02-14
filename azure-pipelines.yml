@@ -30,14 +30,14 @@ stages:
         downloadType: 'single'
         artifactName: '.build'
         downloadPath: '$(System.ArtifactsDirectory)'
-    - task: AzurePowerShell@5
+    - task: AzureCLI@2
       inputs:
         azureSubscription: 'Azure'
-        ScriptType: 'FilePath'
-        ScriptPath: './Cicd/deploy.ps1'
+        scriptType: 'ps'
+        scriptLocation: 'scriptPath'
+        scriptPath: './Cicd/deploy.ps1'
+        arguments: 'dev'
         workingDirectory: 'Cicd'
-        ScriptArguments: 'dev'
-        azurePowerShellVersion: 'LatestVersion'
 - stage: DeployProd
   dependsOn: Build
   jobs:

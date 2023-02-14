@@ -34,7 +34,7 @@ stages:
       displayName: 'DeployDev'
       inputs:
         azureSubscription: 'Azure'
-        scriptType: 'ps'
+        scriptType: 'pscore'
         scriptLocation: 'scriptPath'
         scriptPath: './Cicd/deploy.ps1'
         arguments: 'dev'

@@ -44,6 +44,7 @@ stages:
           pwsh ./deploy.ps1 dev
         addSpnToEnvironment: true
         workingDirectory: 'Cicd'
+        failOnStandardError: true
 - stage: DeployProd
   dependsOn: Build
   jobs:
@@ -56,7 +57,7 @@ stages:
         artifactName: '.build'
         downloadPath: '$(System.ArtifactsDirectory)'
     - task: AzureCLI@2
-      displayName: 'DeployDev'
+      displayName: 'DeployProd'
       inputs:
         azureSubscription: 'Azure'
         scriptType: 'bash'
@@ -69,3 +70,4 @@ stages:
           pwsh ./deploy.ps1 prod
         addSpnToEnvironment: true
         workingDirectory: 'Cicd'
+        failOnStandardError: true

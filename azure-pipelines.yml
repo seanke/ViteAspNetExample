@@ -41,7 +41,7 @@ stages:
           export ARM_CLIENT_SECRET=$servicePrincipalKey
           export ARM_TENANT_ID=$tenantId
           export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
-          powershell ./deploy.ps1 dev
+          pwsh ./deploy.ps1 dev
         arguments: 'dev'
         addSpnToEnvironment: true
         workingDirectory: 'Cicd'

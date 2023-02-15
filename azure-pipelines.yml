@@ -42,7 +42,6 @@ stages:
           export ARM_TENANT_ID=$tenantId
           export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
           pwsh ./deploy.ps1 dev
-        arguments: 'dev'
         addSpnToEnvironment: true
         workingDirectory: 'Cicd'
 - stage: DeployProd
@@ -56,11 +55,17 @@ stages:
         downloadType: 'single'
         artifactName: '.build'
         downloadPath: '$(System.ArtifactsDirectory)'
-    - task: AzurePowerShell@5
+    - task: AzureCLI@2
+      displayName: 'DeployDev'
       inputs:
         azureSubscription: 'Azure'
-        ScriptType: 'FilePath'
-        ScriptPath: './Cicd/deploy.ps1'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          export ARM_CLIENT_ID=$servicePrincipalId
+          export ARM_CLIENT_SECRET=$servicePrincipalKey
+          export ARM_TENANT_ID=$tenantId
+          export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+          pwsh ./deploy.ps1 prod
+        addSpnToEnvironment: true
         workingDirectory: 'Cicd'
-        ScriptArguments: 'prod'
-        azurePowerShellVersion: 'LatestVersion'

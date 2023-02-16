@@ -6,7 +6,7 @@ $config = Get-Content "config.$EnvironmentSuffix.json" | Out-String | ConvertFro
 
 $resourceGroupName = $config.appName + '-rg-' + $EnvironmentSuffix
 $webAppName = $config.appName + '-wa-' + $EnvironmentSuffix
-$zipFilePath = './../.build/WebApp.zip'
+$zipFilePath = '../.build/WebApp.zip'
 
 az webapp deploy `
     --resource-group $resourceGroupName `

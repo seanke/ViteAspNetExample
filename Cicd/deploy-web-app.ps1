@@ -10,8 +10,8 @@ $zipFilePath = '../.build/WebApp.zip'
 
 cd ..
 cd ..
+cd ..
 ls
-cd Cicd
 
 az webapp deploy `
     --resource-group $resourceGroupName `

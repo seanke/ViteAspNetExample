@@ -9,6 +9,7 @@ $webAppName = $config.appName + '-wa-' + $EnvironmentSuffix
 $zipFilePath = '../.build/WebApp.zip'
 
 cd ..
+cd ..
 ls
 cd Cicd
 

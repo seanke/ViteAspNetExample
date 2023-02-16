@@ -1,0 +1,73 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:  
+- stage: Build
+  jobs:  
+  - job: Build
+    steps:
+    - task: PowerShell@2
+      displayName: Build
+      inputs:
+        filePath: './Cicd/build.ps1'
+        workingDirectory: 'Cicd'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact'
+      inputs:
+        pathtoPublish: '.build/'
+        artifactName: '.build'
+- stage: DeployDev
+  dependsOn: Build
+  jobs:
+  - job: DeployDev
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '.build'
+        downloadPath: '$(Build.SourcesDirectory)'
+    - task: AzureCLI@2
+      displayName: 'DeployDev'
+      inputs:
+        azureSubscription: 'Azure'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          export ARM_CLIENT_ID=$servicePrincipalId
+          export ARM_CLIENT_SECRET=$servicePrincipalKey
+          export ARM_TENANT_ID=$tenantId
+          export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+          pwsh ./deploy.ps1 dev
+        addSpnToEnvironment: true
+        workingDirectory: 'Cicd'
+        failOnStandardError: true
+- stage: DeployProd
+  dependsOn: Build
+  jobs:
+  - job: DeployProd
+    steps:
+    - task: DownloadBuildArtifacts@1
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: '.build'
+        downloadPath: '$(Build.SourcesDirectory)'
+    - task: AzureCLI@2
+      displayName: 'DeployProd'
+      inputs:
+        azureSubscription: 'Azure'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          export ARM_CLIENT_ID=$servicePrincipalId
+          export ARM_CLIENT_SECRET=$servicePrincipalKey
+          export ARM_TENANT_ID=$tenantId
+          export ARM_SUBSCRIPTION_ID=$(az account show --query 'id' --output tsv)
+          pwsh ./deploy.ps1 prod
+        addSpnToEnvironment: true
+        workingDirectory: 'Cicd'
+        failOnStandardError: true

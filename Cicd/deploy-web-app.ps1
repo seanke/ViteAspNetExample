@@ -6,7 +6,7 @@ $config = Get-Content "config.$EnvironmentSuffix.json" | Out-String | ConvertFro
 
 $resourceGroupName = $config.appName + '-rg-' + $EnvironmentSuffix
 $webAppName = $config.appName + '-wa-' + $EnvironmentSuffix
-$zipFilePath = './../.build/WebVite.zip'
+$zipFilePath = './../.build/WebApp.zip'
 
 az webapp deploy `
     --resource-group $resourceGroupName `
@@ -14,7 +14,13 @@ az webapp deploy `
     --src-path $zipFilePath `
     --type zip `
     --only-show-errors
+if($LASTEXITCODE -ne 0){
+    throw
+}
 
 az webapp restart `
     --name $webAppName `
     --resource-group $resourceGroupName
+if($LASTEXITCODE -ne 0){
+    throw
+}

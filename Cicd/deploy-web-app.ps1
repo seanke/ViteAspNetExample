@@ -8,6 +8,10 @@ $resourceGroupName = $config.appName + '-rg-' + $EnvironmentSuffix
 $webAppName = $config.appName + '-wa-' + $EnvironmentSuffix
 $zipFilePath = '../.build/WebApp.zip'
 
+cd ..
+ls
+cd Cicd
+
 az webapp deploy `
     --resource-group $resourceGroupName `
     --name $webAppName `

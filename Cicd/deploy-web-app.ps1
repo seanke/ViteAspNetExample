@@ -9,8 +9,7 @@ $webAppName = $config.appName + '-wa-' + $EnvironmentSuffix
 $zipFilePath = '../.build/WebApp.zip'
 
 cd ..
-cd ..
-cd ..
+cd .build
 ls
 
 az webapp deploy `

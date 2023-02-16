@@ -29,7 +29,7 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: '.build'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        downloadPath: '$(Build.SourcesDirectory)'
     - task: AzureCLI@2
       displayName: 'DeployDev'
       inputs:
@@ -55,7 +55,7 @@ stages:
         buildType: 'current'
         downloadType: 'single'
         artifactName: '.build'
-        downloadPath: '$(System.ArtifactsDirectory)'
+        downloadPath: '$(Build.SourcesDirectory)'
     - task: AzureCLI@2
       displayName: 'DeployProd'
       inputs:

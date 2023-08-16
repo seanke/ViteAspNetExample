@@ -1,4 +1,7 @@
-param($EnvironmentSuffix)
+param(
+    [Parameter(Mandatory=$true)]
+    $EnvironmentSuffix
+)
 
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $scriptDirectory

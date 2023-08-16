@@ -157,4 +157,5 @@ if($createKeyVaultResult.State -ne "Completed")
 {
     Write-Output "################### Key Vault Result ###################"
     $createKeyVaultResult | Receive-Job
+    throw "Error creating key vault"
 }

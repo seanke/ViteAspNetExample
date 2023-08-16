@@ -1,5 +1,9 @@
 param($EnvironmentSuffix)
 
+$scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $scriptDirectory
+
+
 Write-Host "Starting deploy-bootstrap.ps1" -ForegroundColor Cyan
 ./deploy-bootstrap.ps1 $EnvironmentSuffix
 Write-Host "Completed deploy-bootstrap.ps1" -ForegroundColor Cyan

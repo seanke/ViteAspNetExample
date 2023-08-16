@@ -2,6 +2,10 @@ param(
     $EnvironmentSuffix
 )
 
+$scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $scriptDirectory
+
+
 Write-Host "Starting build.ps1" -ForegroundColor Green
 ./build.ps1 $EnvironmentSuffix
 Write-Host "Completed build.ps1" -ForegroundColor Green

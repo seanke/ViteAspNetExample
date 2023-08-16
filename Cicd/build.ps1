@@ -1,4 +1,7 @@
-﻿dotnet publish "./../WebApp/WebApp.csproj" --configuration Release /p:DebugType=None --output "./../.build/WebApp"
+﻿$scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $scriptDirectory
+
+dotnet publish "./../WebApp/WebApp.csproj" --configuration Release /p:DebugType=None --output "./../.build/WebApp"
 if($LASTEXITCODE -ne 0){
     throw
 }
